@@ -1,0 +1,43 @@
+{
+  "name": "college-erp-auth-backend",
+  "version": "0.1.0",
+  "description": "Express.js REST API backend for the College ERP Authentication Module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "setup:db": "node scripts/setupDb.js",
+    "migrate": "node scripts/migrate.js",
+    "verify:schema": "node scripts/verifySchema.js",
+    "test:stage5": "node scripts/testStage5.js",
+    "test:stage6": "node --test scripts/testStage6.js",
+    "test:stage7": "node --test scripts/testStage7.js",
+    "test:stage8": "node --test scripts/testStage8.js",
+    "test": "echo \"No tests yet — see PROJECT_PLAN.md Stage 15\" && exit 0"
+  },
+  "keywords": [
+    "college-erp",
+    "authentication",
+    "express",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.24.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

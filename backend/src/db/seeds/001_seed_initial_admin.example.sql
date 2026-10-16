@@ -1,0 +1,34 @@
+-- =============================================================================
+-- backend/src/db/seeds/001_seed_initial_admin.example.sql
+--
+-- EXAMPLE TEMPLATE ONLY — DO NOT COMMIT REAL PASSWORDS OR RUN IN PRODUCTION
+--
+-- This file documents how an initial bootstrap administrator account can be
+-- provisioned manually in a local development environment.
+--
+-- Security Guidelines:
+--  1. Passwords must ALWAYS be hashed with bcrypt (cost factor >= 12).
+--  2. Never store plaintext passwords in the database.
+--  3. Do not run this file automatically.
+--  4. Replace <GENERATED_BCRYPT_HASH> with a freshly hashed secret.
+--
+-- Example Generation Command:
+--   node -e "const bcrypt = require('bcryptjs'); console.log(bcrypt.hashSync('YourSecureAdminPasswordHere', 12));"
+-- =============================================================================
+
+-- Example insertion for a bootstrap administrator:
+-- INSERT INTO `users` (
+--   `username`,
+--   `email`,
+--   `password_hash`,
+--   `role`,
+--   `is_active`,
+--   `created_by`
+-- ) VALUES (
+--   'admin',
+--   'admin@college.edu',
+--   '<GENERATED_BCRYPT_HASH>',
+--   'ADMIN',
+--   1,
+--   NULL
+-- );
