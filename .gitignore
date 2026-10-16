@@ -1,33 +1,107 @@
-# ─── Environment & Secrets ────────────────────────────────────────────────────
+# Dependencies
+
+node_modules/
+jspm_packages/
+bower_components/
+web_modules/
+.pnpm-store/
+
+# Environment variables and secrets
+
 .env
 .env.*
 !.env.example
 !.env.*.example
 
-# ─── Node / npm ───────────────────────────────────────────────────────────────
-node_modules/
+# Logs
+
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json        # keep if you prefer to commit it; remove this line
-.npm/
+lerna-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# ─── Build Outputs ────────────────────────────────────────────────────────────
+# Runtime data
+
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Testing and coverage
+
+coverage/
+.nyc_output/
+*.lcov
+
+# Build outputs
+
 dist/
 build/
 out/
+.next/
+.nuxt/
+.output/
+.vuepress/dist/
+.svelte-kit/
+**/.vitepress/dist/
 
-# ─── Logs ─────────────────────────────────────────────────────────────────────
-logs/
-*.log
+# Caches
 
-# ─── OS & IDE ─────────────────────────────────────────────────────────────────
-.DS_Store
-Thumbs.db
+.cache/
+.parcel-cache/
+.npm/
+.eslintcache
+.stylelintcache
+.vite/
+.turbo/
+.astro/
+.docusaurus/
+.serverless/
+.firebase/
+.fusebox/
+.dynamodb/
+
+# TypeScript
+
+*.tsbuildinfo
+
+# Package manager files
+
+*.tgz
+.yarn-integrity
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Other generated files
+
+lib-cov/
+.grunt/
+.lock-wscript
+build/Release/
+node-waf
+.vscode-test/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# IDE and OS
+
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
 *.suo
 *.user
 
-# ─── Testing ──────────────────────────────────────────────────────────────────
-coverage/
+# Next.js and other frameworks
+
+out/
+public/
+!.env.example
