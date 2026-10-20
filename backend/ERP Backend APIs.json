@@ -1,0 +1,1395 @@
+{
+  "info": {
+    "_postman_id": "ccedaa14-4d9c-4450-9d25-badcbc1833ff",
+    "name": "ERP Backend APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54144578",
+    "_collection_link": "https://go.postman.co/collection/54144578-ccedaa14-4d9c-4450-9d25-badcbc1833ff?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "New Request",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-registrations/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-registrations",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Database Test",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/db-test",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "db-test"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Students",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/students",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "students"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Student by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/students/S101",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "students",
+            "S101"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Student",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\n{\n  \"student_id\": \"S106\",\n  \"student_name\": \"Priya Patel\",\n  \"program\": \"BTech CSE\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/students",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "students"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Student",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_name\": \"Aarav Sharma\",\r\n  \"program\": \"BTech CSE\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/students/S101",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "students",
+            "S101"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Student",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_name\": \"Aarav Sharma\",\r\n  \"program\": \"BTech CSE\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/students/S106",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "students",
+            "S106"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all examinations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_name\": \"Aarav Sharma\",\r\n  \"program\": \"BTech CSE\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exams",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exams"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get one examination",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_name\": \"Aarav Sharma\",\r\n  \"program\": \"BTech CSE\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exams/E101",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exams",
+            "E101"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Examination API",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_id\": \"EX_TEST_01\",\r\n  \"exam_name\": \"Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"PLANNED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exams",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exams"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Examination",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exams/E101",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exams",
+            "E101"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Examination",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exams/EX_TEST_01",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exams",
+            "EX_TEST_01"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Results",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/results",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "results"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Result by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registration_id\": 1,\r\n  \"marks_obtained\": 85,\r\n  \"max_marks\": 100,\r\n  \"grade_point\": 8.5\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/results/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "results",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Result",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registration_id\": 1,\r\n  \"marks_obtained\": 90,\r\n  \"max_marks\": 100,\r\n  \"grade_point\": 9.0\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/results/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "results",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Result",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/results/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "results",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Result",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registration_id\": 1,\r\n  \"marks_obtained\": 85,\r\n  \"max_marks\": 100,\r\n  \"grade_point\": 8.5\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/results",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "results"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Courses",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/courses",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "courses"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Course by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/courses/C103",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "courses",
+            "C103"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Course",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"course_id\": \"C104\",\r\n  \"course_code\": \"CS304\",\r\n  \"course_name\": \"Web Development\",\r\n  \"credits\": 3.0\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/courses",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "courses"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Course",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"course_code\": \"CS304\",\r\n  \"course_name\": \"Full Stack Web Development\",\r\n  \"credits\": 4.0\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/courses/C104",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "courses",
+            "C104"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete course",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/courses/C104",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "courses",
+            "C104"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Attendance Records",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/attendance",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "attendance"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Attendance",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"student_id\": \"S104\",\n  \"course_id\": \"C101\",\n  \"semester_id\": 1,\n  \"classes_conducted\": 20,\n  \"classes_attended\": 18\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/attendance",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "attendance"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Attendance by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/attendance/4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "attendance",
+            "4"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Attendance",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"course_id\": \"C101\",\r\n  \"semester_id\": 1,\r\n  \"classes_conducted\": 25,\r\n  \"classes_attended\": 23\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/attendance/19",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "attendance",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Attendance",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/attendance/19",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "attendance",
+            "19"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET All Semesters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semesters",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semesters"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Semester",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"semester_number\": 3,\n  \"academic_year\": \"2026-2027\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semesters",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semesters"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Semester by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semesters/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semesters",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Semester",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"semester_number\": 1,\r\n  \"academic_year\": \"2027-2028\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semesters/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semesters",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Semester",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semesters/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semesters",
+            "5"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET All Registrations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-registrations",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-registrations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Registration by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_name\": \"Updated Test Examination\",\r\n  \"exam_type\": \"Internal\",\r\n  \"semester_id\": 1,\r\n  \"status\": \"SCHEDULED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-registrations/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-registrations",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Exam Registration",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-registrations",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-registrations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Registration",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-registrations/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-registrations",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Registration",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-registrations/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-registrations",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET All Exam Schedules",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-schedules",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-schedules"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Exam Schedule by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-schedules/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-schedules",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Exam Schedule",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_id\": \"E103\",\r\n  \"course_id\": \"C103\",\r\n  \"exam_date\": \"2026-11-18\",\r\n  \"start_time\": \"09:00:00\",\r\n  \"end_time\": \"11:00:00\",\r\n  \"room_no\": \"Room 104\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-schedules/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-schedules",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Exam Schedule",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-schedules/3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-schedules",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Exam Schedule",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"exam_id\": \"E103\",\r\n  \"course_id\": \"C103\",\r\n  \"exam_date\": \"2026-11-15\",\r\n  \"start_time\": \"10:00:00\",\r\n  \"end_time\": \"13:00:00\",\r\n  \"room_no\": \"Room 103\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/exam-schedules",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "exam-schedules"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Semester Results",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semester-results",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semester-results"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a Semester Result",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S101\",\r\n  \"semester_id\": 1,\r\n  \"total_credits\": 20.00,\r\n  \"total_credit_points\": 160.00,\r\n  \"sgpa\": 8.00\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semester-results",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semester-results"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET Semester Result By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semester-results/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semester-results",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Semester Result",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S101\",\r\n  \"semester_id\": 1,\r\n  \"total_credits\": 20.00,\r\n  \"total_credit_points\": 170.00,\r\n  \"sgpa\": 8.50\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semester-results/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semester-results",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE Semester Result",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"student_id\": \"S104\",\r\n  \"schedule_id\": 1,\r\n  \"registration_date\": \"2026-10-20\",\r\n  \"status\": \"REGISTERED\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/semester-results/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "semester-results",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
