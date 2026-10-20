@@ -1,4 +1,36 @@
 -- 01_auth: Tests
+
+DROP PROCEDURE IF EXISTS sp_test_auth_expected_error;
+DELIMITER $$
+
+CREATE PROCEDURE sp_test_auth_expected_error(IN p_test_case TINYINT UNSIGNED)
+BEGIN
+  DECLARE v_caught BOOLEAN DEFAULT FALSE;
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '45000'
+    SET v_caught = TRUE;
+
+  CASE p_test_case
+    WHEN 1 THEN
+      CALL sp_register_user('admin', 'another@example.edu',
+        '$2a$10$x', 'ADMIN', NULL, NULL);
+    WHEN 2 THEN
+      CALL sp_change_user_role(2, 'ADMIN');
+    WHEN 3 THEN
+      INSERT INTO app_user
+        (username, email, password_hash, role_id, student_id, faculty_id)
+      VALUES ('bad_student', 'bad@example.edu', '$2a$10$x', 3, NULL, NULL);
+    ELSE
+      SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Invalid test case';
+  END CASE;
+
+  SELECT
+    IF(v_caught, 'PASS', 'FAIL') AS result,
+    CONCAT('01_auth: expected error test ', p_test_case) AS test;
+END$$
+
+DELIMITER ;
+
 START TRANSACTION;
 
 -- Test fn_is_account_locked: user 1 (admin) should not be locked
@@ -19,10 +51,7 @@ SELECT
 
 -- Test sp_register_user: reject duplicate username (edge case)
 -- We use a handler to capture the SIGNAL and verify it fires
-BEGIN
-  DECLARE CONTINUE HANDLER FOR SQLSTATE '45000' BEGIN END;
-  CALL sp_register_user('admin', 'another@example.edu', '$2a$10$x', 'ADMIN', NULL, NULL);
-END;
+CALL sp_test_auth_expected_error(1);
 SELECT
   CASE WHEN (SELECT COUNT(*) FROM app_user WHERE username = 'admin') = 1 THEN 'PASS' ELSE 'FAIL' END AS result,
   '01_auth: sp_register_user rejects duplicate username' AS test;
@@ -50,20 +79,13 @@ SELECT
 -- Test sp_change_user_role: change student01 to ADMIN (edge case will be the trigger)
 -- We need to clear student_id first for the trigger to allow ADMIN role
 -- Because the trigger enforces link consistency, changing role without clearing link should fail
-BEGIN
-  DECLARE CONTINUE HANDLER FOR SQLSTATE '45000' BEGIN END;
-  CALL sp_change_user_role(2, 'ADMIN');
-END;
+CALL sp_test_auth_expected_error(2);
 SELECT
   CASE WHEN fn_role_name(2) = 'STUDENT' THEN 'PASS' ELSE 'FAIL' END AS result,
   '01_auth: sp_change_user_role blocked by trigger when link inconsistent' AS test;
 
 -- Test trigger: BEFORE INSERT blocks STUDENT without student_id
-BEGIN
-  DECLARE CONTINUE HANDLER FOR SQLSTATE '45000' BEGIN END;
-  INSERT INTO app_user (username, email, password_hash, role_id, student_id, faculty_id)
-  VALUES ('bad_student', 'bad@example.edu', '$2a$10$x', 3, NULL, NULL);
-END;
+CALL sp_test_auth_expected_error(3);
 SELECT
   CASE WHEN NOT EXISTS(SELECT 1 FROM app_user WHERE username = 'bad_student') THEN 'PASS' ELSE 'FAIL' END AS result,
   '01_auth: trigger blocks STUDENT without student_id' AS test;
@@ -75,3 +97,5 @@ SELECT
   '01_auth: login_audit has seed entries' AS test;
 
 ROLLBACK;
+
+DROP PROCEDURE IF EXISTS sp_test_auth_expected_error;

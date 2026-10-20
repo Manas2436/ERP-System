@@ -74,7 +74,7 @@ INSERT INTO admission (student_id, admission_date, admission_type, merit_score) 
 --   prog 1 (stud 1,5,9):  off 1,3,4 + stud1->off2, stud5->off2, stud9->off6
 --   prog 2 (stud 2,6,10): off 3,4,5,6
 --   prog 3 (stud 3,7,11): off 5,6,7,8
---   prog 4 (stud 4,8,12): off 7,8,1 + stud4->off2, stud8->off6, stud12->off6
+--   prog 4 (stud 4,8,12): off 7,8,1 + stud4->off2, stud8->off6, stud12->off5
 INSERT INTO enrollment (student_id, offering_id, enrolled_on) VALUES
   (1,  1, '2026-07-01'), (1,  2, '2026-07-01'), (1,  3, '2026-07-01'), (1,  4, '2026-07-01'),
   (2,  3, '2026-07-01'), (2,  4, '2026-07-01'), (2,  5, '2026-07-01'), (2,  6, '2026-07-01'),
@@ -87,7 +87,7 @@ INSERT INTO enrollment (student_id, offering_id, enrolled_on) VALUES
   (9,  1, '2026-07-01'), (9,  3, '2026-07-01'), (9,  4, '2026-07-01'), (9,  6, '2026-07-01'),
   (10, 3, '2026-07-01'), (10, 4, '2026-07-01'), (10, 5, '2026-07-01'), (10, 6, '2026-07-01'),
   (11, 5, '2026-07-01'), (11, 6, '2026-07-01'), (11, 7, '2026-07-01'), (11, 8, '2026-07-01'),
-  (12, 7, '2026-07-01'), (12, 8, '2026-07-01'), (12, 1, '2026-07-01'), (12, 6, '2026-07-01');
+  (12, 7, '2026-07-01'), (12, 8, '2026-07-01'), (12, 1, '2026-07-01'), (12, 5, '2026-07-01');
 
 -- Attendance: 12 dates per enrollment on weekdays 2026-08-03 to 2026-10-16
 -- Dates used: Aug 3,5,7,10,12,14,17,19,21 Sep 7,9,11
