@@ -33,6 +33,8 @@ const env = require('../config/env');
 // ── Security constants ─────────────────────────────────────────────────────────
 const ALGORITHM    = 'HS256';
 const MIN_SECRET_LENGTH = 32; // 32 characters = 256 bits minimum
+const ISSUER       = process.env.JWT_ISSUER || undefined;
+const AUDIENCE     = process.env.JWT_AUDIENCE || undefined;
 
 /**
  * Retrieve the signing secret, enforcing minimum length in production.
@@ -65,6 +67,13 @@ function signAccessToken(payload) {
   if (!payload || !payload.id || !payload.role) {
     throw new Error('signAccessToken: payload must contain id and role.');
   }
+  const signOptions = {
+    algorithm : ALGORITHM,
+    expiresIn : env.JWT_EXPIRES_IN || '8h',
+  };
+  if (ISSUER) signOptions.issuer = ISSUER;
+  if (AUDIENCE) signOptions.audience = AUDIENCE;
+
   return jwt.sign(
     {
       sub:  String(payload.id),
@@ -72,10 +81,7 @@ function signAccessToken(payload) {
       type: 'access',
     },
     getSecret(),
-    {
-      algorithm : ALGORITHM,
-      expiresIn : env.JWT_EXPIRES_IN || '8h',
-    }
+    signOptions
   );
 }
 
@@ -90,6 +96,13 @@ function signRefreshToken(payload) {
   if (!payload || !payload.id) {
     throw new Error('signRefreshToken: payload must contain id.');
   }
+  const signOptions = {
+    algorithm : ALGORITHM,
+    expiresIn : env.JWT_REFRESH_EXPIRES_IN || '7d',
+  };
+  if (ISSUER) signOptions.issuer = ISSUER;
+  if (AUDIENCE) signOptions.audience = AUDIENCE;
+
   return jwt.sign(
     {
       sub:  String(payload.id),
@@ -97,10 +110,7 @@ function signRefreshToken(payload) {
       jti:  crypto.randomBytes(16).toString('hex'),
     },
     getSecret(),
-    {
-      algorithm : ALGORITHM,
-      expiresIn : env.JWT_REFRESH_EXPIRES_IN || '7d',
-    }
+    signOptions
   );
 }
 
@@ -114,7 +124,11 @@ function signRefreshToken(payload) {
  * @throws  {Error}                  If the token type claim is not 'access'.
  */
 function verifyAccessToken(token) {
-  const decoded = jwt.verify(token, getSecret(), { algorithms: [ALGORITHM] });
+  const verifyOptions = { algorithms: [ALGORITHM] };
+  if (ISSUER) verifyOptions.issuer = ISSUER;
+  if (AUDIENCE) verifyOptions.audience = AUDIENCE;
+
+  const decoded = jwt.verify(token, getSecret(), verifyOptions);
   if (decoded.type !== 'access') {
     // Prevent refresh tokens from being accepted on access-token endpoints.
     const err = new jwt.JsonWebTokenError('Token type mismatch.');
@@ -131,7 +145,11 @@ function verifyAccessToken(token) {
  * @throws  {jwt.TokenExpiredError | jwt.JsonWebTokenError}
  */
 function verifyRefreshToken(token) {
-  const decoded = jwt.verify(token, getSecret(), { algorithms: [ALGORITHM] });
+  const verifyOptions = { algorithms: [ALGORITHM] };
+  if (ISSUER) verifyOptions.issuer = ISSUER;
+  if (AUDIENCE) verifyOptions.audience = AUDIENCE;
+
+  const decoded = jwt.verify(token, getSecret(), verifyOptions);
   if (decoded.type !== 'refresh') {
     const err = new jwt.JsonWebTokenError('Token type mismatch.');
     throw err;

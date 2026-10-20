@@ -1,6 +1,6 @@
 {
   "name": "college-erp-auth-backend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Express.js REST API backend for the College ERP Authentication Module",
   "main": "server.js",
   "scripts": {
@@ -13,7 +13,18 @@
     "test:stage6": "node --test scripts/testStage6.js",
     "test:stage7": "node --test scripts/testStage7.js",
     "test:stage8": "node --test scripts/testStage8.js",
-    "test": "echo \"No tests yet — see PROJECT_PLAN.md Stage 15\" && exit 0"
+    "test:stage9": "node --test scripts/testStage9.js",
+    "test:stage12": "node --test scripts/testStage12.js",
+    "test:stage13": "node --test scripts/testStage13.js",
+    "test:stage14": "node --test scripts/testStage14.js",
+    "test:stage15": "jest --runInBand",
+    "test:unit": "jest tests/unit --runInBand",
+    "test:integration": "jest tests/integration --runInBand",
+    "test": "jest --runInBand"
+  },
+  "exports": {
+    ".": "./server.js",
+    "./middleware": "./src/middleware/index.js"
   },
   "keywords": [
     "college-erp",
@@ -35,9 +46,12 @@
     "express": "^5.3.0",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.24.6"
+    "mysql2": "^3.24.6",
+    "nodemailer": "^10.1.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "jest": "^30.5.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.3.1"
   }
 }

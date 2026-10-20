@@ -9,7 +9,13 @@
 
 const { Router } = require('express');
 const authController = require('../controllers/authController');
-const { validateLogin, validateRefresh, validateLogout } = require('../validations/authValidation');
+const {
+  validateLogin,
+  validateRefresh,
+  validateLogout,
+  validateForgotPassword,
+  validateResetPassword,
+} = require('../validations/authValidation');
 const { createRateLimiter } = require('../middleware/rateLimiter');
 
 const router = Router();
@@ -43,6 +49,20 @@ const logoutLimiter = createRateLimiter({
   skipInTest: true,
 });
 
+const forgotPasswordLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,                   // 10 password reset requests per 15 min per IP
+  message: 'Too many password reset requests from this IP. Please try again later.',
+  skipInTest: true,
+});
+
+const resetPasswordLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 15,                   // 15 reset attempts per 15 min per IP
+  message: 'Too many password reset attempts from this IP. Please try again later.',
+  skipInTest: true,
+});
+
 // ── GET /api/v1/auth/captcha ──────────────────────────────────────────────────
 router.get('/captcha', captchaLimiter, authController.getCaptcha);
 
@@ -56,4 +76,16 @@ router.post('/refresh-token', refreshLimiter, validateRefresh, authController.re
 // ── POST /api/v1/auth/logout ───────────────────────────────────────────────────
 router.post('/logout', logoutLimiter, validateLogout, authController.logout);
 
+// ── POST /api/v1/auth/forgot-password ─────────────────────────────────────────
+router.post('/forgot-password', forgotPasswordLimiter, validateForgotPassword, authController.forgotPassword);
+
+// ── POST /api/v1/auth/reset-password ──────────────────────────────────────────
+router.post('/reset-password', resetPasswordLimiter, validateResetPassword, authController.resetPassword);
+
+// ── GET /api/v1/auth/dev-reset-token/:identifier (Dev Simulation Only) ────────
+if (process.env.NODE_ENV !== 'production') {
+  router.get('/dev-reset-token/:identifier', authController.getDevResetToken);
+}
+
 module.exports = router;
+

@@ -43,11 +43,16 @@ function errorHandler(err, req, res, next) {
         ? err.statusCode
         : 500;
 
-  // In production, hide internal error messages.
-  const message =
-    env.NODE_ENV === 'production' && statusCode === 500
+  // In production, hide internal error messages and raw database details.
+  const isProd = process.env.NODE_ENV === 'production' || env.NODE_ENV === 'production';
+  let message =
+    isProd && statusCode === 500
       ? 'Internal server error.'
       : err.message || 'Internal server error.';
+
+  if (isProd && /ER_[A-Z_]+|SQLSTATE|syntax to use near|Unknown column/i.test(message)) {
+    message = 'Internal server error.';
+  }
 
   return sendError(res, statusCode, message);
 }

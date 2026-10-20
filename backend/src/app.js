@@ -30,8 +30,18 @@ const logger = require('./utils/logger');
 
 const app = express();
 
+// ── Disable framework fingerprinting (X-Powered-By) ──────────────────────────
+app.disable('x-powered-by');
+
 // ── 1. Security headers (Helmet) ──────────────────────────────────────────────
-app.use(helmet());
+// Pure JSON REST API: Disable HTML CSP so cross-origin frontend client is not
+// disrupted, and configure cross-origin resource policy for CORS API access.
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 
 // ── 2. CORS ───────────────────────────────────────────────────────────────────
 const corsOptions = {

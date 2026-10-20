@@ -29,7 +29,7 @@ router.use('/health', healthRoutes);
 const authRoutes = require('./authRoutes');
 router.use('/v1/auth', authRoutes);
 
-// const adminRoutes = require('./adminRoutes');
-// router.use('/v1/admin', adminRoutes);
+const adminRoutes = require('./adminRoutes');
+router.use('/v1/admin', adminRoutes);
 
 module.exports = router;

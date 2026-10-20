@@ -78,4 +78,7 @@ function requireRole(...roles) {
   };
 }
 
+requireRole.requireRole = requireRole;
+requireRole.ALLOWED_ROLES = ALLOWED_ROLES;
+
 module.exports = requireRole;

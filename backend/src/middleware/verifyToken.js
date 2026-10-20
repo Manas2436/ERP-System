@@ -79,4 +79,7 @@ function verifyToken(req, res, next) {
   }
 }
 
+verifyToken.verifyToken = verifyToken;
+verifyToken.ALLOWED_ROLES = ALLOWED_ROLES;
+
 module.exports = verifyToken;

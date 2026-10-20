@@ -86,10 +86,90 @@ async function logout(req, res, next) {
   }
 }
 
+/**
+ * POST /api/v1/auth/forgot-password
+ * Initiates a password reset request. Returns generic response to prevent account enumeration.
+ */
+async function forgotPassword(req, res, next) {
+  try {
+    const { email, username, identifier, captchaId, captchaAnswer } = req.body;
+    const clientIp = req.ip || (req.connection && req.connection.remoteAddress) || '127.0.0.1';
+
+    await authService.forgotPassword({
+      email,
+      username,
+      identifier,
+      captchaId,
+      captchaAnswer,
+      clientIp,
+    });
+
+    return sendSuccess(
+      res,
+      200,
+      'If an account matching the provided identifier exists, a password reset link has been sent.',
+      null
+    );
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/**
+ * POST /api/v1/auth/reset-password
+ * Completes a password reset using a valid, unexpired reset token.
+ */
+async function resetPassword(req, res, next) {
+  try {
+    const token = req.body.token || req.body.resetToken;
+    const newPassword = req.body.newPassword || req.body.password;
+    const clientIp = req.ip || (req.connection && req.connection.remoteAddress) || '127.0.0.1';
+
+    await authService.resetPassword({
+      token,
+      newPassword,
+      clientIp,
+    });
+
+    return sendSuccess(
+      res,
+      200,
+      'Password has been reset successfully. Please log in with your new password.',
+      null
+    );
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/**
+ * GET /api/v1/auth/dev-reset-token/:identifier
+ * Development-only endpoint to retrieve the simulated reset token for testing.
+ */
+function getDevResetToken(req, res) {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(404).json({ success: false, message: 'Not found' });
+  }
+  const identifier = req.params.identifier;
+  const token = authService.getDevResetToken(identifier);
+  if (!token) {
+    return sendSuccess(res, 200, 'No active reset token found.', null);
+  }
+  return sendSuccess(res, 200, 'Dev reset token retrieved.', {
+    identifier,
+    token,
+    resetUrl: `http://localhost:3000/reset-password?token=${token}`,
+  });
+}
+
 module.exports = {
   getCaptcha,
   login,
   refresh,
   logout,
+  forgotPassword,
+  resetPassword,
+  getDevResetToken,
 };
+
 

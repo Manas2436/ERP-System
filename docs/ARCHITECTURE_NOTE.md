@@ -1,7 +1,7 @@
 # Architecture Note — Inter-Module Integration
 
 **Document Type:** Architecture Decision Record (ADR-001)  
-**Status:** Draft — Stage 1  
+**Status:** Completed — Stage 14 API Integration Readiness ✅  
 **Scope:** How the Authentication Module exposes stable interfaces for future ERP modules
 
 ---
@@ -26,24 +26,27 @@ Each module must know *who* the currently logged-in user is and *what role* they
 
 ## Integration Patterns
 
-### Pattern A — Shared Middleware (Monorepo / Single Deployment)
+### Pattern A — Shared Middleware (Monorepo / Single Deployment — Canonical Implementation)
 
-When all modules run in the same Node.js process (simplest setup for a single college):
+When modules run in the same Node.js process / monorepo, they import the shared middleware from `shared/middleware` or `backend/src/middleware`:
 
 ```
-auth-module/
+shared/
+  middleware/
+    index.js            ← stable re-export hub for cross-module integration
+backend/
   src/
     middleware/
-      verifyToken.js      ← exported and imported by other modules
-      requireRole.js      ← exported and imported by other modules
+      index.js          ← central export hub
+      verifyToken.js    ← stateless Bearer JWT verification
+      requireRole.js    ← RBAC role enforcement guard
 ```
 
 Other modules import the middleware directly:
 
 ```js
 // Example: attendance module route
-const { verifyToken } = require('../../auth-module/src/middleware/verifyToken');
-const { requireRole } = require('../../auth-module/src/middleware/requireRole');
+const { verifyToken, requireRole } = require('../../shared/middleware');
 
 router.get('/attendance/report',
   verifyToken,
@@ -52,9 +55,9 @@ router.get('/attendance/report',
 );
 ```
 
-`req.user` is populated by `verifyToken` with `{ id, role, name }` and is available to all downstream middleware and controllers.
+`req.user` is populated by `verifyToken` with `{ id, role }` and is available to all downstream middleware and controllers. User profile details (name, email) can be queried from `vw_user_summary` or `users.id` foreign key.
 
-### Pattern B — Token Verification Endpoint (Separate Deployments / Microservices)
+### Pattern B — Token Verification Endpoint (Separate Deployments / Microservices — Reference Architecture)
 
 When modules are deployed independently:
 
