@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examination ERP | Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">E</div><div><strong>ExamFlow</strong><small>ERP MODULE</small></div></div>
+      <p class="nav-label">WORKSPACE</p>
+      <button class="nav active" data-page="dashboard">▦ <span>Dashboard</span></button>
+      <button class="nav" data-page="students">♙ <span>Students</span></button>
+      <button class="nav" data-page="schedules">▣ <span>Exam schedules</span></button>
+      <button class="nav" data-page="attendance">◷ <span>Attendance</span></button>
+      <button class="nav" data-page="registrations">✓ <span>Registrations</span></button>
+      <button class="nav" data-page="results">▤ <span>Exam results</span></button>
+      <button class="nav" data-page="semester">★ <span>Semester & CGPA</span></button>
+      <div class="side-note"><span class="status-dot"></span> Local MySQL workspace</div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div><p class="eyebrow">UNIVERSITY ERP / EXAMINATIONS</p><h1 id="page-title">Dashboard</h1></div>
+        <div class="connection"><span class="status-dot"></span><span id="connection-text">Checking database…</span></div>
+      </header>
+      <section id="notice" class="notice hidden"></section>
+      <section id="page-content"></section>
+      <footer>ExamFlow · Examination Management Prototype <span>Connected to your local MySQL database</span></footer>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
