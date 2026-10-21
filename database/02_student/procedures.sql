@@ -20,6 +20,7 @@ BEGIN
   DECLARE v_student_id INT UNSIGNED;
   DECLARE v_enrollment_no VARCHAR(20);
   DECLARE v_year SMALLINT;
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; RESIGNAL; END;
 
   -- Validate program exists
   IF NOT EXISTS (SELECT 1 FROM program WHERE program_id = p_program_id) THEN
@@ -34,6 +35,7 @@ BEGIN
   SET v_year = YEAR(CURDATE());
   SET v_enrollment_no = fn_generate_enrollment_no(p_program_id, v_year);
 
+  START TRANSACTION;
   INSERT INTO student (enrollment_no, first_name, last_name, email, program_id)
   VALUES (v_enrollment_no, p_first_name, p_last_name, p_email, p_program_id);
   SET v_student_id = LAST_INSERT_ID();
@@ -46,6 +48,8 @@ BEGIN
 
   INSERT INTO admission (student_id, admission_date, admission_type, merit_score)
   VALUES (v_student_id, CURDATE(), p_admission_type, p_merit_score);
+
+  COMMIT;
 
   SELECT v_student_id AS student_id, v_enrollment_no AS enrollment_no;
 END$$

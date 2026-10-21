@@ -1,6 +1,6 @@
 -- 02_student: Seed data
 
--- Courses (1-8): two per department
+-- Courses (1-16): four per department, preserving four assigned courses per student
 INSERT INTO course (course_id, course_code, course_name, credits, department_id, semester_no) VALUES
   (1, 'CE101',   'Data Structures',      4, 1, 1),
   (2, 'CE102',   'Computer Networks',     3, 1, 1),
@@ -9,9 +9,17 @@ INSERT INTO course (course_id, course_code, course_name, credits, department_id,
   (5, 'ENTC101', 'Digital Electronics',   4, 3, 1),
   (6, 'ENTC102', 'Signal Processing',     3, 3, 1),
   (7, 'ME101',   'Thermodynamics',        4, 4, 1),
-  (8, 'ME102',   'Fluid Mechanics',       3, 4, 1);
+  (8, 'ME102',   'Fluid Mechanics',       3, 4, 1),
+  (9, 'CE103',   'Operating Systems',     4, 1, 1),
+  (10,'CE104',   'Software Engineering',  3, 1, 1),
+  (11,'IT103',   'Cybersecurity Fundamentals', 4, 2, 1),
+  (12,'IT104',   'Cloud Computing',       3, 2, 1),
+  (13,'ENTC103', 'Communication Systems', 4, 3, 1),
+  (14,'ENTC104', 'Microprocessors',       3, 3, 1),
+  (15,'ME103',   'Machine Design',         4, 4, 1),
+  (16,'ME104',   'Manufacturing Processes',3, 4, 1);
 
--- Course offerings in semester 1 (offering_id 1-8)
+-- Course offerings in semester 1 (offering_id 1-16)
 -- offering 2 has capacity 3 (deliberately tiny for trigger demo)
 INSERT INTO course_offering (offering_id, course_id, semester_id, capacity) VALUES
   (1, 1, 1, 10),
@@ -21,7 +29,15 @@ INSERT INTO course_offering (offering_id, course_id, semester_id, capacity) VALU
   (5, 5, 1, 10),
   (6, 6, 1, 8),
   (7, 7, 1, 10),
-  (8, 8, 1, 8);
+  (8, 8, 1, 8),
+  (9, 9, 1, 10),
+  (10,10,1, 10),
+  (11,11,1, 10),
+  (12,12,1, 10),
+  (13,13,1, 10),
+  (14,14,1, 10),
+  (15,15,1, 10),
+  (16,16,1, 10);
 
 -- Student profiles
 INSERT INTO student_profile (student_id, date_of_birth, phone, address, admission_year) VALUES
@@ -68,26 +84,23 @@ INSERT INTO admission (student_id, admission_date, admission_type, merit_score) 
   (11, '2026-06-02', 'DIRECT_SECOND_YEAR', 68.00),
   (12, '2026-06-02', 'TRANSFER', 74.00);
 
--- Enrollments: each student enrolls in 4 offerings
--- offering 2 (CE102, cap=3): only students 1, 4, 5 enroll (exactly 3 = full)
--- Pattern:
---   prog 1 (stud 1,5,9):  off 1,3,4 + stud1->off2, stud5->off2, stud9->off6
---   prog 2 (stud 2,6,10): off 3,4,5,6
---   prog 3 (stud 3,7,11): off 5,6,7,8
---   prog 4 (stud 4,8,12): off 7,8,1 + stud4->off2, stud8->off6, stud12->off5
+-- Enrollments: each student enrolls in 4 offerings from their own program branch
+-- offering 2 (CE102, cap=3): CE students 2, 5, and 9 fill it exactly.
+-- CE students 2,5,9 use offerings 1,2,9,10; IT 3,6,10 use 3,4,11,12;
+-- ENTC 1,7,11 use 5,6,13,14; ME 4,8,12 use 7,8,15,16.
 INSERT INTO enrollment (student_id, offering_id, enrolled_on) VALUES
-  (1,  1, '2026-07-01'), (1,  2, '2026-07-01'), (1,  3, '2026-07-01'), (1,  4, '2026-07-01'),
-  (2,  3, '2026-07-01'), (2,  4, '2026-07-01'), (2,  5, '2026-07-01'), (2,  6, '2026-07-01'),
-  (3,  5, '2026-07-01'), (3,  6, '2026-07-01'), (3,  7, '2026-07-01'), (3,  8, '2026-07-01'),
-  (4,  7, '2026-07-01'), (4,  8, '2026-07-01'), (4,  1, '2026-07-01'), (4,  2, '2026-07-01'),
-  (5,  1, '2026-07-01'), (5,  2, '2026-07-01'), (5,  3, '2026-07-01'), (5,  4, '2026-07-01'),
-  (6,  3, '2026-07-01'), (6,  4, '2026-07-01'), (6,  5, '2026-07-01'), (6,  6, '2026-07-01'),
-  (7,  5, '2026-07-01'), (7,  6, '2026-07-01'), (7,  7, '2026-07-01'), (7,  8, '2026-07-01'),
-  (8,  7, '2026-07-01'), (8,  8, '2026-07-01'), (8,  1, '2026-07-01'), (8,  6, '2026-07-01'),
-  (9,  1, '2026-07-01'), (9,  3, '2026-07-01'), (9,  4, '2026-07-01'), (9,  6, '2026-07-01'),
-  (10, 3, '2026-07-01'), (10, 4, '2026-07-01'), (10, 5, '2026-07-01'), (10, 6, '2026-07-01'),
-  (11, 5, '2026-07-01'), (11, 6, '2026-07-01'), (11, 7, '2026-07-01'), (11, 8, '2026-07-01'),
-  (12, 7, '2026-07-01'), (12, 8, '2026-07-01'), (12, 1, '2026-07-01'), (12, 5, '2026-07-01');
+  (1,  5, '2026-07-01'), (1,  6, '2026-07-01'), (1, 13, '2026-07-01'), (1, 14, '2026-07-01'),
+  (2,  2, '2026-07-01'), (2,  1, '2026-07-01'), (2,  9, '2026-07-01'), (2, 10, '2026-07-01'),
+  (3,  3, '2026-07-01'), (3,  4, '2026-07-01'), (3, 11, '2026-07-01'), (3, 12, '2026-07-01'),
+  (4,  7, '2026-07-01'), (4,  8, '2026-07-01'), (4, 15, '2026-07-01'), (4, 16, '2026-07-01'),
+  (5,  2, '2026-07-01'), (5,  1, '2026-07-01'), (5,  9, '2026-07-01'), (5, 10, '2026-07-01'),
+  (6,  3, '2026-07-01'), (6,  4, '2026-07-01'), (6, 11, '2026-07-01'), (6, 12, '2026-07-01'),
+  (7,  5, '2026-07-01'), (7,  6, '2026-07-01'), (7, 13, '2026-07-01'), (7, 14, '2026-07-01'),
+  (8,  7, '2026-07-01'), (8,  8, '2026-07-01'), (8, 15, '2026-07-01'), (8, 16, '2026-07-01'),
+  (9,  2, '2026-07-01'), (9,  1, '2026-07-01'), (9,  9, '2026-07-01'), (9, 10, '2026-07-01'),
+  (10, 3, '2026-07-01'), (10, 4, '2026-07-01'), (10,11, '2026-07-01'), (10,12, '2026-07-01'),
+  (11, 5, '2026-07-01'), (11, 6, '2026-07-01'), (11,13, '2026-07-01'), (11,14, '2026-07-01'),
+  (12, 7, '2026-07-01'), (12, 8, '2026-07-01'), (12,15, '2026-07-01'), (12,16, '2026-07-01');
 
 -- Attendance: 12 dates per enrollment on weekdays 2026-08-03 to 2026-10-16
 -- Dates used: Aug 3,5,7,10,12,14,17,19,21 Sep 7,9,11

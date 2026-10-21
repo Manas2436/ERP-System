@@ -6,9 +6,8 @@ INSERT INTO role (role_id, role_name) VALUES
   (3, 'STUDENT');
 
 -- All user passwords are bcrypt hash of 'Password@123' (cost 10)
--- Hash: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
--- (pre-generated with bcryptjs)
-SET @pw_hash = '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
+-- Hash generated and verified with bcryptjs.
+SET @pw_hash = '$2a$10$3hdlcfEE2hhoBs0UqJRKmeqOZYEFStKzKAYXL4QasJKo1yfSprsgC';
 
 -- Admin user (no student/faculty link)
 INSERT INTO app_user (user_id, username, email, password_hash, role_id, student_id, faculty_id) VALUES
