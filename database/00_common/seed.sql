@@ -24,9 +24,9 @@ INSERT INTO semester (semester_id, academic_year_id, term, start_date, end_date)
 
 -- Students (1-12)
 INSERT INTO student (student_id, enrollment_no, first_name, last_name, email, program_id) VALUES
-  (1,  'EN2026001', 'Test', 'Student01', 'student01@example.edu', 1),
-  (2,  'EN2026002', 'Test', 'Student02', 'student02@example.edu', 2),
-  (3,  'EN2026003', 'Test', 'Student03', 'student03@example.edu', 3),
+  (1,  'EN2026001', 'Test', 'Student01', 'student01@example.edu', 3),
+  (2,  'EN2026002', 'Test', 'Student02', 'student02@example.edu', 1),
+  (3,  'EN2026003', 'Test', 'Student03', 'student03@example.edu', 2),
   (4,  'EN2026004', 'Test', 'Student04', 'student04@example.edu', 4),
   (5,  'EN2026005', 'Test', 'Student05', 'student05@example.edu', 1),
   (6,  'EN2026006', 'Test', 'Student06', 'student06@example.edu', 2),

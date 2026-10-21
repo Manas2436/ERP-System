@@ -11,10 +11,10 @@ BEGIN
 
   CASE p_case
     WHEN 1 THEN
-      CALL sp_enroll_student(1, 1);
+      CALL sp_enroll_student(1, 5);
     WHEN 2 THEN
       INSERT INTO enrollment (student_id, offering_id, enrolled_on)
-      VALUES (9, 2, '2026-07-15');
+      VALUES (4, 2, '2026-07-15');
     WHEN 3 THEN
       INSERT INTO attendance (enrollment_id, class_date, status)
       VALUES (2, '2027-12-01', 'PRESENT');
@@ -55,7 +55,7 @@ SELECT
 CALL sp_test_student_expected_error(1);
 SELECT
   CASE WHEN (SELECT COUNT(*) FROM enrollment
-             WHERE student_id = 1 AND offering_id = 1
+             WHERE student_id = 1 AND offering_id = 5
                AND status = 'ENROLLED') = 1
        THEN 'PASS' ELSE 'FAIL' END AS result,
   '02_student: duplicate active enrollment is rejected' AS test;
@@ -67,7 +67,7 @@ SELECT
   '02_student: sp_drop_enrollment sets status to DROPPED' AS test;
 
 -- Test sp_enroll_student re-activation
-CALL sp_enroll_student(1, 1);
+CALL sp_enroll_student(1, 5);
 SELECT
   CASE WHEN (SELECT status FROM enrollment WHERE enrollment_id = 1) = 'ENROLLED' THEN 'PASS' ELSE 'FAIL' END AS result,
   '02_student: sp_enroll_student re-activates dropped enrollment' AS test;
@@ -81,8 +81,31 @@ SELECT
 -- Test trigger: capacity exceeded on insert (offering 2, cap=3, already has 3)
 CALL sp_test_student_expected_error(2);
 SELECT
-  CASE WHEN NOT EXISTS(SELECT 1 FROM enrollment WHERE student_id = 9 AND offering_id = 2) THEN 'PASS' ELSE 'FAIL' END AS result,
+  CASE WHEN NOT EXISTS(SELECT 1 FROM enrollment WHERE student_id = 4 AND offering_id = 2) THEN 'PASS' ELSE 'FAIL' END AS result,
   '02_student: trigger blocks enrollment when capacity full' AS test;
+
+-- Demo logins, student programs, and active course enrollments must share a branch.
+SELECT IF((SELECT COUNT(*) FROM app_user u
+           JOIN student st ON st.student_id=u.student_id
+           JOIN program p ON p.program_id=st.program_id
+           WHERE (u.username='student01' AND p.program_code='BE-ENTC')
+              OR (u.username='student02' AND p.program_code='BE-CE')
+              OR (u.username='student03' AND p.program_code='BE-IT'))=3,
+          'PASS','FAIL') result,'02_student: demo users map to intended branches' test;
+SELECT IF(NOT EXISTS(
+  SELECT 1 FROM enrollment e
+  JOIN student st ON st.student_id=e.student_id
+  JOIN program p ON p.program_id=st.program_id
+  JOIN course_offering co ON co.offering_id=e.offering_id
+  JOIN course c ON c.course_id=co.course_id
+  WHERE st.student_id BETWEEN 1 AND 12 AND e.status='ENROLLED'
+    AND p.department_id<>c.department_id
+),'PASS','FAIL') result,'02_student: seeded active courses match student branches' test;
+SELECT IF(NOT EXISTS(
+  SELECT student_id FROM enrollment
+  WHERE student_id BETWEEN 1 AND 12 AND status='ENROLLED'
+  GROUP BY student_id HAVING COUNT(*)<>4
+),'PASS','FAIL') result,'02_student: each seeded student has four active courses' test;
 
 -- Test trigger: future attendance date blocked
 CALL sp_test_student_expected_error(3);
@@ -92,7 +115,7 @@ SELECT
 
 -- Test views exist
 SELECT
-  CASE WHEN (SELECT COUNT(*) FROM vw_low_attendance) >= 0 THEN 'PASS' ELSE 'FAIL' END AS result,
+  CASE WHEN (SELECT COUNT(*) FROM vw_low_attendance) > 0 THEN 'PASS' ELSE 'FAIL' END AS result,
   '02_student: vw_low_attendance view works' AS test;
 
 ROLLBACK;

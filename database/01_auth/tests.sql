@@ -40,7 +40,7 @@ SELECT
 
 -- Test fn_role_name: admin user should have ADMIN role
 SELECT
-  CASE WHEN fn_role_name(1) = 'ADMIN' THEN 'PASS' ELSE 'FAIL' END AS result,
+  CASE WHEN fn_role_name(1) COLLATE utf8mb4_unicode_ci = 'ADMIN' COLLATE utf8mb4_unicode_ci THEN 'PASS' ELSE 'FAIL' END AS result,
   '01_auth: fn_role_name returns ADMIN for admin user' AS test;
 
 -- Test sp_register_user: register a new user successfully
@@ -75,13 +75,18 @@ CALL sp_record_login_attempt('student01', 0, '5.5.5.5');
 SELECT
   CASE WHEN fn_is_account_locked(2) = 1 THEN 'PASS' ELSE 'FAIL' END AS result,
   '01_auth: sp_record_login_attempt locks account after 5 failures' AS test;
+SET @student01_locked_until=(SELECT locked_until FROM app_user WHERE username='student01');
+CALL sp_record_login_attempt('student01',0,'5.5.5.5');
+SELECT IF((SELECT locked_until FROM app_user WHERE username='student01')=@student01_locked_until,
+  'PASS','FAIL') AS result,
+  '01_auth: repeated failures do not extend an active lock' AS test;
 
 -- Test sp_change_user_role: change student01 to ADMIN (edge case will be the trigger)
 -- We need to clear student_id first for the trigger to allow ADMIN role
 -- Because the trigger enforces link consistency, changing role without clearing link should fail
 CALL sp_test_auth_expected_error(2);
 SELECT
-  CASE WHEN fn_role_name(2) = 'STUDENT' THEN 'PASS' ELSE 'FAIL' END AS result,
+  CASE WHEN fn_role_name(2) COLLATE utf8mb4_unicode_ci = 'STUDENT' COLLATE utf8mb4_unicode_ci THEN 'PASS' ELSE 'FAIL' END AS result,
   '01_auth: sp_change_user_role blocked by trigger when link inconsistent' AS test;
 
 -- Test trigger: BEFORE INSERT blocks STUDENT without student_id

@@ -63,6 +63,7 @@ BEGIN
       UPDATE app_user
       SET failed_attempts = failed_attempts + 1,
           locked_until = CASE
+            WHEN locked_until > NOW() THEN locked_until
             WHEN failed_attempts + 1 >= 5 THEN DATE_ADD(NOW(), INTERVAL 15 MINUTE)
             ELSE locked_until
           END

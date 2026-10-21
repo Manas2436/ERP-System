@@ -15,8 +15,12 @@ done
 if [ -f ../.env ]; then set -a; . ../.env; set +a; fi
 DB_NAME="${DB_NAME:-college_erp}"
 
-if [ -z "${MYSQL_CMD:-}" ]; then
-  MYSQL_CMD="docker compose -f ../docker-compose.yml exec -T mysql mysql -uroot -p${MYSQL_ROOT_PASSWORD:-rootpass} --default-character-set=utf8mb4"
+DB_HOST="${DB_HOST:-127.0.0.1}"
+DB_PORT="${DB_PORT:-3306}"
+DB_USER="${DB_USER:-root}"
+if [ "$DB_NAME" != "college_erp" ]; then
+  echo "Refusing to reset '$DB_NAME'; this development runner only manages college_erp." >&2
+  exit 2
 fi
 
 PHASES="schema constraints functions procedures triggers views seed"
@@ -28,16 +32,43 @@ has_sql() {  # true if the file has at least one non-comment, non-blank line
 
 run_file() {
   echo "  -> $1"
-  if ! $MYSQL_CMD "$DB_NAME" < "$1"; then
+  local output
+  if [ -n "${MYSQL_CMD:-}" ]; then
+    if ! output=$( $MYSQL_CMD --default-character-set=utf8mb4 "$DB_NAME" < "$1" 2>&1 ); then
+      printf '%s\n' "$output"
+      echo "FAILED in $1"
+      exit 1
+    fi
+  else
+    local -a mysql_args=(--default-character-set=utf8mb4 --host="$DB_HOST" --port="$DB_PORT" --user="$DB_USER")
+    if [ -n "${DB_PASSWORD:-}" ]; then mysql_args+=(--password="$DB_PASSWORD"); fi
+    if ! output=$(mysql "${mysql_args[@]}" "$DB_NAME" < "$1" 2>&1); then
+      printf '%s\n' "$output"
+      echo "FAILED in $1"
+      exit 1
+    fi
+  fi
+  printf '%s\n' "$output"
+  if [[ "$1" == */tests.sql ]] && grep -Eiq '(^|[[:space:]])FAIL([[:space:]]|$)' <<< "$output"; then
     echo
-    echo "FAILED in $1"
+    echo "TEST FAILURE reported in $1"
     exit 1
   fi
 }
 
+run_admin_sql() {
+  if [ -n "${MYSQL_CMD:-}" ]; then
+    $MYSQL_CMD --default-character-set=utf8mb4 -e "$1"
+  else
+    local -a mysql_args=(--default-character-set=utf8mb4 --host="$DB_HOST" --port="$DB_PORT" --user="$DB_USER")
+    if [ -n "${DB_PASSWORD:-}" ]; then mysql_args+=(--password="$DB_PASSWORD"); fi
+    mysql "${mysql_args[@]}" -e "$1"
+  fi
+}
+
 echo "Resetting database '$DB_NAME'"
-$MYSQL_CMD -e "DROP DATABASE IF EXISTS \`$DB_NAME\`; CREATE DATABASE \`$DB_NAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-$MYSQL_CMD -e "SET GLOBAL log_bin_trust_function_creators = 1;" || echo "(could not set log_bin_trust_function_creators; function creation may fail)"
+run_admin_sql "DROP DATABASE IF EXISTS \`$DB_NAME\`; CREATE DATABASE \`$DB_NAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+run_admin_sql "SET GLOBAL log_bin_trust_function_creators = 1;" || echo "(could not set log_bin_trust_function_creators; function creation may fail)"
 
 for phase in $PHASES; do
   echo "== phase: $phase"
@@ -56,5 +87,5 @@ if [ "$RUN_TESTS" = "1" ]; then
 fi
 
 echo
-$MYSQL_CMD "$DB_NAME" -e "SELECT COUNT(*) AS tables_created FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_type = 'BASE TABLE';"
+run_admin_sql "USE \`$DB_NAME\`; SELECT COUNT(*) AS tables_created FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_type = 'BASE TABLE';"
 echo "OK: database built."

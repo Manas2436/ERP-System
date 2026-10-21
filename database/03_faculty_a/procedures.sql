@@ -15,6 +15,7 @@ CREATE PROCEDURE sp_register_faculty(
 )
 BEGIN
   DECLARE v_faculty_id INT UNSIGNED;
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; RESIGNAL; END;
 
   IF NOT EXISTS (SELECT 1 FROM department WHERE department_id = p_department_id) THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Unknown department specified';

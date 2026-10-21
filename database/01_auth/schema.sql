@@ -32,6 +32,21 @@ CREATE TABLE app_user (
   CONSTRAINT ck_app_user_link CHECK (NOT (student_id IS NOT NULL AND faculty_id IS NOT NULL))
 );
 
+CREATE TABLE refresh_tokens (
+  refresh_token_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  token_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  is_revoked TINYINT(1) NOT NULL DEFAULT 0,
+  revoked_at DATETIME NULL,
+  replaced_by_token_hash CHAR(64) NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT pk_refresh_tokens PRIMARY KEY (refresh_token_id),
+  CONSTRAINT uq_refresh_tokens_hash UNIQUE (token_hash),
+  CONSTRAINT fk_refresh_tokens_user FOREIGN KEY (user_id) REFERENCES app_user (user_id) ON DELETE CASCADE
+);
+CREATE INDEX idx_refresh_tokens_user_active ON refresh_tokens (user_id, is_revoked, expires_at);
+
 CREATE TABLE login_audit (
   login_audit_id     INT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id            INT UNSIGNED NULL,
