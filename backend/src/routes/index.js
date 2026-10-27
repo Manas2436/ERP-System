@@ -1,4 +1,4 @@
-const express=require('express');const bcrypt=require('bcryptjs');const {query,callProcedure}=require('../config/db');const {authenticate,allow,ownStudent}=require('../middleware/auth');const {createRateLimiter}=require('../middleware/rateLimit');const {RecaptchaError,verifyRecaptchaToken}=require('../services/captcha');const sessions=require('../services/authSessions');
+const express=require('express');const bcrypt=require('bcryptjs');const {query,callProcedure}=require('../config/db');const {authenticate,allow,ownStudent}=require('../middleware/auth');const {createRateLimiter}=require('../middleware/rateLimit');const {RecaptchaError,verifyRecaptchaToken}=require('../services/captcha');const sessions=require('../services/authSessions');const passwordReset=require('../services/passwordReset');
 const router=express.Router();
 const asyncRoute=fn=>(req,res,next)=>Promise.resolve(fn(req,res,next)).catch(next);
 const ok=(res,data,status=200)=>res.status(status).json({data});
@@ -24,6 +24,26 @@ router.post('/auth/login',createRateLimiter({windowMs:15*60*1000,max:20}),asyncR
 }));
 router.post('/auth/refresh',asyncRoute(async(req,res)=>{if(typeof req.body?.refreshToken!=='string')return res.status(400).json({error:{message:'Refresh token is required'}});const result=await sessions.rotateRefreshToken(req.body.refreshToken);ok(res,result);}));
 router.post('/auth/logout',asyncRoute(async(req,res)=>{const token=req.body?.refreshToken;if(typeof token==='string')await sessions.revokeRefreshToken(token);ok(res,{signedOut:true});}));
+router.post('/auth/forgot-password',createRateLimiter({windowMs:15*60*1000,max:10}),asyncRoute(async(req,res)=>{
+  const identifier=req.body?.identifier||req.body?.username||req.body?.email;
+  if(typeof identifier!=='string'||!identifier.trim()||identifier.trim().length>120)return res.status(400).json({error:{message:'Enter your username or registered email address.'}});
+  if(process.env.NODE_ENV==='production'&&!passwordReset.isMailConfigured())return res.status(503).json({error:{code:'PASSWORD_RESET_UNAVAILABLE',message:'Password reset email is not configured. Contact your system administrator.'}});
+  await passwordReset.requestReset(identifier);
+  ok(res,{message:'If an active account matches and email delivery is available, reset instructions will be sent to its registered email address. If they do not arrive, contact your system administrator.'},202);
+}));
+router.post('/auth/reset-password',createRateLimiter({windowMs:15*60*1000,max:15}),asyncRoute(async(req,res)=>{
+  const {token,newPassword,confirmPassword}=req.body||{};
+  if(confirmPassword!==undefined&&confirmPassword!==newPassword)return res.status(400).json({error:{message:'The passwords do not match.'}});
+  await passwordReset.resetPassword(token,newPassword);
+  ok(res,{message:'Password updated. You can now sign in with your new password.'});
+}));
+if(process.env.NODE_ENV!=='production')router.get('/auth/dev-reset-token/:identifier',createRateLimiter({windowMs:15*60*1000,max:20}),asyncRoute(async(req,res)=>{
+  const remote=req.ip||req.socket?.remoteAddress;
+  if(!['::1','127.0.0.1','::ffff:127.0.0.1'].includes(remote))return res.status(404).json({error:{message:'Route not found'}});
+  const token=passwordReset.getDevToken(req.params.identifier);
+  if(!token)return ok(res,null);
+  ok(res,{token});
+}));
 router.post('/auth/register',authenticate,allow('ADMIN'),asyncRoute(async(req,res)=>{const b=req.body||{};if(!b.username||!b.email||!b.password||String(b.password).length<8)return res.status(400).json({error:{message:'Username, email and password of at least 8 characters are required'}});const hash=await bcrypt.hash(b.password,12);const r=await callProcedure('sp_register_user',[b.username,b.email,hash,b.role_name,b.student_id||null,b.faculty_id||null]);ok(res,{result:r},201);}));
 router.get('/auth/me',authenticate,asyncRoute(async(req,res)=>ok(res,{user:req.user})));
 router.get('/students/:studentId/profile',authenticate,ownStudent,asyncRoute(async(req,res)=>ok(res,(await query('SELECT s.student_id,s.enrollment_no,s.first_name,s.last_name,s.email,s.status,p.date_of_birth,p.phone,p.address,p.admission_year FROM student s LEFT JOIN student_profile p ON p.student_id=s.student_id WHERE s.student_id=?',[req.params.studentId]))[0]||null)));

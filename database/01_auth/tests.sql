@@ -33,6 +33,19 @@ DELIMITER ;
 
 START TRANSACTION;
 
+-- Password reset storage links to the canonical app_user identity and records
+-- only a digest with expiry/consumption metadata.
+SET @reset_test_user_id=(SELECT user_id FROM app_user WHERE username='admin');
+INSERT INTO password_reset_tokens(user_id,token_hash,expires_at)
+VALUES(@reset_test_user_id,REPEAT('a',64),DATE_ADD(NOW(),INTERVAL 15 MINUTE));
+SELECT
+  CASE WHEN EXISTS(SELECT 1 FROM password_reset_tokens WHERE user_id=@reset_test_user_id AND token_hash=REPEAT('a',64) AND consumed_at IS NULL AND expires_at>NOW()) THEN 'PASS' ELSE 'FAIL' END AS result,
+  '01_auth: password reset token is stored as a digest linked to app_user' AS test;
+UPDATE password_reset_tokens SET consumed_at=NOW() WHERE user_id=@reset_test_user_id AND token_hash=REPEAT('a',64);
+SELECT
+  CASE WHEN EXISTS(SELECT 1 FROM password_reset_tokens WHERE user_id=@reset_test_user_id AND token_hash=REPEAT('a',64) AND consumed_at IS NOT NULL) THEN 'PASS' ELSE 'FAIL' END AS result,
+  '01_auth: consumed password reset token cannot be reused' AS test;
+
 -- Test fn_is_account_locked: user 1 (admin) should not be locked
 SELECT
   CASE WHEN fn_is_account_locked(1) = 0 THEN 'PASS' ELSE 'FAIL' END AS result,

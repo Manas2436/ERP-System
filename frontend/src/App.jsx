@@ -3,6 +3,8 @@ import {AuthProvider} from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './layouts/AppLayout';
 import Login from './modules/auth/Login';
+import ForgotPassword from './modules/auth/ForgotPassword';
+import ResetPassword from './modules/auth/ResetPassword';
 import Dashboard from './modules/Dashboard';
 import ModulePage from './modules/ModulePage';
 
@@ -11,6 +13,8 @@ const page=(name,roles)=> <ProtectedRoute roles={roles}><AppLayout><ModulePage k
 export default function App(){
   return <AuthProvider><BrowserRouter><Routes>
     <Route path="/login" element={<Login/>}/>
+    <Route path="/forgot-password" element={<ForgotPassword/>}/>
+    <Route path="/reset-password" element={<ResetPassword/>}/>
     <Route path="/" element={<ProtectedRoute><AppLayout/></ProtectedRoute>}>
       <Route index element={<Dashboard/>}/>
     </Route>
