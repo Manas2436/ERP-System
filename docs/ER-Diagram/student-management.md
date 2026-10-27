@@ -2,6 +2,10 @@
 
 This standalone diagram covers the Student Management tables and the shared identity, academic-calendar, and department entities required to explain their declared foreign keys. PK = primary key; FK = foreign key; UK = unique key. Attributes retain the SQL column names; nullability and other constraints are summarized below where they affect cardinality.
 
+Exports: [SVG](exports/student-management.svg) · [PNG](exports/student-management.png)
+
+For the entity-only view, see [student-management-overview.md](student-management-overview.md).
+
 ```mermaid
 erDiagram
   DEPARTMENT {
