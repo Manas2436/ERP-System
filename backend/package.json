@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "check": "node --check src/server.js && node --check src/routes/index.js && node --check src/middleware/errors.js && node --check src/services/passwordReset.js"
+    "check": "node --check src/server.js && node --check src/routes/index.js && node --check src/middleware/errors.js && node --check src/services/passwordReset.js && node --check src/services/examinationMarks.js && node --check src/services/examinationRegistrations.js",
+    "test": "node --test"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

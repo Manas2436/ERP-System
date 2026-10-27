@@ -8,7 +8,17 @@ function errors(err,req,res,next){
   else if(['ECONNREFUSED','ETIMEDOUT','PROTOCOL_CONNECTION_LOST','ER_ACCESS_DENIED_ERROR','ER_BAD_DB_ERROR'].includes(err.code)){status=503;code='DATABASE_UNAVAILABLE';message='The ERP database is unavailable. Check the database service and server configuration.';}
   else if(err.type==='entity.parse.failed'){status=400;message='Request body must contain valid JSON.';}
   else if(err.type==='entity.too.large'){status=413;message='Request body is too large.';}
-  else if(err.sqlState==='45000'){status=400;message='The requested operation violates a business rule.';}
+  else if(err.sqlState==='45000'){
+    const safeSqlMessages={
+      'Published marks are locked':{status:409,message:'Results are already published. Marks can no longer be entered or changed.'},
+      'Marks outside exam range':{status:400,message:'Marks are outside the allowed range for this exam.'},
+      'Invalid exam registration':{status:404,message:'Exam registration was not found.'},
+      'Invalid marks value':{status:400,message:'Marks must be a valid number within the exam range.'},
+      'Faculty is not assigned to this offering':{status:403,message:'You are not assigned to this offering.'},
+    };
+    const known=safeSqlMessages[err.sqlMessage];
+    status=known?.status||400;message=known?.message||'The requested operation violates a business rule.';
+  }
   else if(messages[err.code]){status=err.code==='ER_DUP_ENTRY'?409:400;message=messages[err.code];}
   if(status>=500)console.error('API request failed',{method:req.method,path:req.path,errorCode:err.code||err.name,sqlState:err.sqlState||null});
   res.status(status).json({error:{...(code?{code}:{}),message}});

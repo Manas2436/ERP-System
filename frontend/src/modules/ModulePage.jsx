@@ -70,6 +70,25 @@ function ActionForm({label,busy,values,onChange,onSubmit}){
   </form>;
 }
 
+function MarksEntryForm({registrations,busy,values,onChange,onSubmit}){
+  const registration=registrations.find(row=>Number(row.exam_registration_id)===Number(values.exam_registration_id))||registrations[0];
+  return <form className="action-card" onSubmit={onSubmit}>
+    <h2 className="h6">Enter marks</h2>
+    <div className="action-fields">
+      <label className="form-label">Eligible registration
+        <select className="form-select" required value={values.exam_registration_id??registration.exam_registration_id} onChange={event=>onChange('exam_registration_id',event.target.value)}>
+          {registrations.map(row=><option value={row.exam_registration_id} key={row.exam_registration_id}>#{row.exam_registration_id} · {row.course_code} — {row.exam_name} · {row.student_name} ({row.enrollment_no}) · max {row.max_marks}</option>)}
+        </select>
+      </label>
+      <label className="form-label">Marks obtained
+        <input className="form-control" type="number" required min="0" max={registration.max_marks} step="0.01" value={values.marks_obtained??''} onChange={event=>onChange('marks_obtained',event.target.value)}/>
+        <span className="form-text">Enter a value from 0 to {registration.max_marks}.</span>
+      </label>
+    </div>
+    <button className="btn btn-primary btn-sm" type="submit" disabled={busy}>{busy?'Submitting…':'Enter marks'}</button>
+  </form>;
+}
+
 const courseDateFormatter=new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 function courseDate(value){
   if(!value)return '—';
@@ -101,6 +120,8 @@ export default function ModulePage({name}){
   const [error,setError]=useState('');
   const [message,setMessage]=useState('');
   const [form,setForm]=useState({});
+  const rows=Array.isArray(data)?data:[];
+  const eligibleMarks=rows.filter(row=>!Number(row.results_published));
 
   async function load(section=selected){
     setSelected(section);setError('');setData(null);setBusy(true);
@@ -114,13 +135,13 @@ export default function ModulePage({name}){
     if(name==='students')return user.role==='ADMIN'&&selected.label==='Course offerings'?['Enroll student']:[];
     if(name==='faculty')return ['ADMIN','FACULTY'].includes(user.role)&&selected.label==='Course rosters'?['Record attendance']:[];
     if(name==='faculty-b')return user.role==='FACULTY'&&selected.label==='Leave requests'?['Request leave']:user.role==='ADMIN'&&selected.label==='Payroll records'?['Generate payroll']:[];
-    if(name==='examinations')return user.role==='STUDENT'?(selected.label==='Revaluation requests'?['Request revaluation']:[]):(selected.label==='Registrations and marks'?['Enter marks']:[]);
+    if(name==='examinations')return user.role==='STUDENT'?(selected.label==='Revaluation requests'?['Request revaluation']:[]):(selected.label==='Registrations and marks'&&eligibleMarks.length?['Enter marks']:[]);
     if(name==='administration'&&selected.label==='User accounts')return ['Create account'];
     if(name==='administration'&&selected.label==='Pending fees')return ['Collect fee'];
     if(name==='administration'&&selected.label==='Hostel occupancy')return ['Allocate hostel'];
     if(name==='notices'&&user.role==='ADMIN')return ['Publish notice'];
     return [];
-  },[name,user.role,selected.label]);
+  },[name,user.role,selected.label,eligibleMarks.length]);
 
   async function perform(label,values){
     const num=key=>Number(values[key]);
@@ -133,7 +154,7 @@ export default function ModulePage({name}){
       if(label==='Record attendance')await api('/students/attendance',{token:session.token,method:'POST',body:{enrollment_id:num('enrollment_id'),class_date:values.class_date,status:values.status||'PRESENT'}});
       if(label==='Generate payroll')await api('/faculty/payroll',{token:session.token,method:'POST',body:{faculty_id:num('faculty_id'),period_start:values.period_start,period_end:values.period_end,lop_amount:num('lop_amount')||0}});
       if(label==='Register for exam')await api('/exams/registration',{token:session.token,method:'POST',body:{exam_id:num('exam_id'),offering_id:num('offering_id'),exam_hall_id:num('exam_hall_id')||null}});
-      if(label==='Enter marks')await api('/exams/marks',{token:session.token,method:'POST',body:{exam_registration_id:num('exam_registration_id'),marks_obtained:num('marks_obtained')}});
+      if(label==='Enter marks')await api('/exams/marks',{token:session.token,method:'POST',body:{exam_registration_id:Number(values.exam_registration_id??eligibleMarks[0]?.exam_registration_id),marks_obtained:num('marks_obtained')}});
       if(label==='Request revaluation')await api('/exams/revaluation',{token:session.token,method:'POST',body:{marks_id:num('marks_id'),reason:values.reason}});
       if(label==='Collect fee')await api('/admin/fee-payments',{token:session.token,method:'POST',body:{student_id:num('student_id'),fee_structure_id:num('fee_structure_id'),payment_method:values.payment_method||'UPI'}});
       if(label==='Allocate hostel')await api('/admin/hostel-allocations',{token:session.token,method:'POST',body:{student_id:num('student_id'),hostel_room_id:num('hostel_room_id')}});
@@ -161,7 +182,6 @@ export default function ModulePage({name}){
     return null;
   }
 
-  const rows=Array.isArray(data)?data:[];
   const structured= name==='faculty'&&(selected.label==='My profile'||selected.label.startsWith('Faculty profile ·'))&&data&&typeof data==='object';
   const hasRowActions=(name==='students'&&user.role==='ADMIN'&&selected.label==='Enrollment records')||(name==='faculty'&&((user.role==='ADMIN'&&selected.label==='Faculty directory')||(user.role==='FACULTY'&&selected.label==='Course rosters')))||(name==='faculty-b'&&user.role==='ADMIN'&&selected.label==='Leave requests')||(name==='examinations'&&((user.role==='STUDENT'&&selected.label==='Exam schedule')||(user.role==='ADMIN'&&['Exam schedule','Revaluation requests'].includes(selected.label))));
   const emptyMessages={'Course offerings':'There are no course offerings for this term.','Enrollment records':'No enrollment records are available.','My Courses':'No courses are currently assigned. Your enrolled subjects will appear here when they are assigned.','Attendance':'Attendance has not been recorded for your courses.','Leave balances':'No leave balance has been configured.','Leave requests':'No leave requests are available.','Payroll records':'No payroll records are available.','Exam schedule':'No examinations are scheduled.','Registrations and marks':'No exam registrations are available.','Published results':'Results will appear here after the institution publishes them.','Revaluation requests':'There are no revaluation requests.','User accounts':'No user accounts are available.','Pending fees':'No fee items are pending.','Fee structures':'No fee structures are configured.','Fee collection':'No fee collections are recorded.','Receipts':'No receipts have been issued.','Hostel occupancy':'No hostel rooms are configured.','Hostel allocations':'No hostel allocations are recorded.','Current notices':'There are no current notices.'};
@@ -169,7 +189,9 @@ export default function ModulePage({name}){
   return <div className="page-stack">
     <div className="page-heading"><div><p className="eyebrow">ERP MODULE</p><h1>{config.title}</h1><p className="page-subtitle">Records and actions available to your {user.role.toLowerCase()} account.</p></div><button className="btn btn-outline-primary" disabled={busy||Boolean(busyAction)} onClick={()=>load()}>Refresh data</button></div>
     <div className="module-tabs" role="tablist" aria-label={`${config.title} views`}>{sections.map(section=><button type="button" role="tab" aria-selected={selected.label===section.label} key={section.label} className={`module-tab${selected.label===section.label?' active':''}`} onClick={()=>load(section)}>{section.label}</button>)}</div>
-    {actions.length>0&&<div className="action-grid">{actions.map(label=><ActionForm key={label} label={label} busy={busyAction===label} values={form[label]||{}} onChange={(key,value)=>updateField(label,key,value)} onSubmit={event=>{event.preventDefault();perform(label,form[label]||{})}}/>)}</div>}
+    {actions.length>0&&<div className="action-grid">{actions.map(label=>label==='Enter marks'?<MarksEntryForm key={label} registrations={eligibleMarks} busy={busyAction===label} values={form[label]||{}} onChange={(key,value)=>updateField(label,key,value)} onSubmit={event=>{event.preventDefault();perform(label,form[label]||{})}}/>:<ActionForm key={label} label={label} busy={busyAction===label} values={form[label]||{}} onChange={(key,value)=>updateField(label,key,value)} onSubmit={event=>{event.preventDefault();perform(label,form[label]||{})}}/>)}</div>}
+    {!busy&&name==='examinations'&&user.role==='FACULTY'&&selected.label==='Registrations and marks'&&eligibleMarks.length===0&&<div className="alert alert-info" role="status">{rows.length?'Results for these registrations are already published. Marks entry is closed.':'No eligible registrations are available for your assigned offerings.'}</div>}
+    {!busy&&name==='examinations'&&user.role==='ADMIN'&&selected.label==='Registrations and marks'&&eligibleMarks.length===0&&<div className="alert alert-info" role="status">{rows.length?'Results for these registrations are already published. Marks entry is closed.':'There are no registrations available for marks entry.'}</div>}
     {message&&<div className="alert alert-success" role="status" aria-live="polite">{message}</div>}
     {error&&<div className="alert alert-danger" role="alert">{error}</div>}
     {busy?<div className="loading-state"><span className="spinner-border spinner-border-sm text-primary" role="status"/><span>Loading {selected.label.toLowerCase()}…</span></div>:structured?<div className="page-stack"><RecordSummary title="Faculty profile" record={data.profile}/><div className="dashboard-grid"><RecordTable title="Qualifications" rows={data.qualifications||[]} empty="No qualifications have been recorded."/><RecordTable title="Designation history" rows={data.designation_history||[]} empty="No designation history is available."/></div></div>:name==='students'&&user.role==='STUDENT'&&selected.label==='My Courses'?<CourseTable rows={rows}/>:<RecordTable title={selected.label} rows={rows} empty={emptyMessages[selected.label]||'No records are available.'} actions={hasRowActions?rowControls:undefined}/ >}
