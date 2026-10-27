@@ -47,6 +47,22 @@ CREATE TABLE refresh_tokens (
 );
 CREATE INDEX idx_refresh_tokens_user_active ON refresh_tokens (user_id, is_revoked, expires_at);
 
+-- Password reset tokens are stored separately from account identities. Only a
+-- SHA-256 digest is persisted; each token is single-use and expires quickly.
+CREATE TABLE password_reset_tokens (
+  reset_token_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  token_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  consumed_at DATETIME NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT pk_password_reset_tokens PRIMARY KEY (reset_token_id),
+  CONSTRAINT uq_password_reset_token_hash UNIQUE (token_hash),
+  CONSTRAINT fk_password_reset_tokens_user FOREIGN KEY (user_id)
+    REFERENCES app_user (user_id) ON DELETE CASCADE
+);
+CREATE INDEX idx_password_reset_user_active ON password_reset_tokens (user_id, consumed_at, expires_at);
+
 CREATE TABLE login_audit (
   login_audit_id     INT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id            INT UNSIGNED NULL,

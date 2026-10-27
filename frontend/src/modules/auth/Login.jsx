@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Navigate} from 'react-router-dom';
+import {Link,Navigate} from 'react-router-dom';
 import {useAuth} from '../../context/AuthContext';
 import RecaptchaCheckbox from './RecaptchaCheckbox';
 
@@ -39,6 +39,7 @@ export default function Login(){
       <label className="form-label" htmlFor="password">Password
         <input id="password" className="form-control form-control-lg" type="password" autoComplete="current-password" required value={password} onChange={event=>setPassword(event.target.value)}/>
       </label>
+      <div className="text-end mb-3"><Link className="small text-decoration-none" to="/forgot-password">Forgot password?</Link></div>
       <RecaptchaCheckbox token={recaptchaToken} onToken={setRecaptchaToken} resetVersion={resetVersion}/>
       <button className="btn btn-primary btn-lg w-100 mt-3" disabled={busy||!username.trim()||!password||!recaptchaToken}>
         {busy?'Signing in…':'Sign in'}
